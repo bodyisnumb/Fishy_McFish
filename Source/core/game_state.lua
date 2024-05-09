@@ -1,5 +1,5 @@
 -- src/core/game_state.lua
-local GameState = {}
+GameState = {}
 GameState.__index = GameState
 
 function GameState:new()

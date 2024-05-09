@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Debug",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${env:E:/Program Files/PlaydateSDK/bin/Playdate Simulator.app}",
+        "args": ["${C:/Users/blessad/Desktop/Projects/crankGamejam}/HelloWorld.pdx"],
+        "stopAtEntry": false,
+        "cwd": "${fileDirname}",
+        "environment": [],
+        "externalConsole": false,
+        "MIMode": "lldb",
+        "preLaunchTask": "make"
+      }
+    ]
+  }

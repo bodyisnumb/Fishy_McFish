@@ -1,9 +1,9 @@
 -- src/core/game.lua
-local Player = require("src.entities.player")
-local HUD = require("src.ui.hud")
-local GameState = require("src.core.game_state")
+import "entities/player.lua"
+import "ui/hud.lua"
+import "core/game_state.lua"
 
-local Game = {}
+Game = {}
 Game.__index = Game
 
 function Game:new()

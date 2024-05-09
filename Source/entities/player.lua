@@ -1,5 +1,5 @@
 -- src/entities/player.lua
-local Player = {}
+Player = {}
 Player.__index = Player
 
 function Player:new(x, y)

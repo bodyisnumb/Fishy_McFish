@@ -1,0 +1,14 @@
+{
+    "C_Cpp.default.includePath": ["${env:E:/Program Files/PlaydateSDK/C_API"],
+    "C_Cpp.default.defines": ["TARGET_EXTENSION", "PLAYDATE_SIMULATOR"],
+    "[c]": {
+      "editor.defaultFormatter": "ms-vscode.cpptools"
+    },
+    "C_Cpp.formatting": "vcFormat",
+    "files.associations": {
+      "*.h": "c"
+    },
+    "Lua.diagnostics.globals": [
+      "import"
+    ]
+  }
