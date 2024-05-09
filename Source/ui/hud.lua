@@ -1,18 +1,19 @@
--- src/ui/hud.lua
-HUD = {}
-HUD.__index = HUD
+import "CoreLibs/graphics"
 
-function HUD:new()
-    local self = setmetatable({}, HUD)
-    return self
+local gfx = playdate.graphics
+
+class('HUD')
+
+function HUD:init(gameState)
+    self.gameState = gameState
 end
 
-function HUD:draw(state)
-    -- Display the stamina on the screen
-    playdate.graphics.drawText("Health: ".. state.hp,10,45)
-    playdate.graphics.drawText("Stamina: " .. state.stamina, 10, 25)
-    playdate.graphics.drawText("gold: " .. state.gold, 10, 5)
-
+function HUD:draw()
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.drawText("Health: " .. self.gameState.hp, 10, 10)
+    gfx.drawText("Stamina: " .. self.gameState.stamina, 10, 30)
+    gfx.drawText("Gold: $" .. self.gameState.gold, 10, 50)
+    gfx.drawText("Bag: " .. #self.gameState.bag .. " fish", 10, 70)
 end
 
 return HUD

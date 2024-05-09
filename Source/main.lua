@@ -1,18 +1,16 @@
 import "CoreLibs/graphics"
-import "CoreLibs/object"
-import "CoreLibs/graphics"
 import "CoreLibs/sprites"
 import "CoreLibs/timer"
 
-local Player = import "entities/player"
-local HUD = import "ui/hud"
-local GameState = import "core/game_state"
-local Game = import "core/game"
+local gfx = playdate.graphics
+import "core/game"
+import "ui/hud"
 
-
-local game = Game:new()
+local game = Game()
+local hud = HUD(game.gameState)
 
 function playdate.update()
     game:update()
     game:draw()
+    hud:draw()
 end
