@@ -23,8 +23,8 @@ gameScreen = {
   player = {
     x = 400/2 - 20/2,
     y = 240/2 - 20/2,
-    width = 20,
-    height = 20,
+    width = 32,
+    height = 24,
     speed = 2,
   },
   
@@ -39,7 +39,7 @@ gameScreen = {
     -- Initialize any data that must be reset every time we return to this state here
     gameScreen.nextState = ""
     gameScreen.poop["x"] = math.random( 25, 400-20 )
-    gameScreen.poop["y"] = math.random( 0, 240-20 )
+    gameScreen.poop["y"] = math.random( 0, 240-100 )
     gameScreen.player["x"] = 400/2 - 20/2
     gameScreen.player["y"] = 240/2 - 20/2
     gameScreen.buttonPressing["up"] = false
@@ -63,7 +63,7 @@ gameScreen = {
     -- Check distance between player and poop
     distance = gameScreen.GetDistance( self, gameScreen.player, gameScreen.poop )
     
-    if ( distance < 20 ) then
+    if ( distance < 5 ) then
       -- dead
       gameScreen.nextState = "title"
     end
@@ -77,6 +77,14 @@ gameScreen = {
     
     -- Draw player
     gameScreen.imgPlayer:draw( gameScreen.player["x"], gameScreen.player["y"] )
+    
+    gfx.setColor( gfx.kColorWhite )
+    gfx.fillRect( 5, 5, 100, 85 )
+    gfx.drawText("Health: 100", 10, 10)
+    gfx.drawText("Stamina: 100", 10, 30)
+    gfx.drawText("Gold: 100$", 10, 50)
+    gfx.drawText("Bag: 0", 10, 70)
+    
     
   end,
   

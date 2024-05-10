@@ -49,8 +49,8 @@ titleScreen = {
   Draw = function( self )
     titleScreen.imgBackground:draw( 0, 0 )
     gfx.setColor( gfx.kColorWhite )
-    gfx.fillRect( 25, 0, 100, 25 )
-    gfx.drawTextAligned( "FISHY MCFISH", 25, 3, kTextAlignment.left )
+    gfx.fillRect( 145, 75, 110, 25 )
+    gfx.drawTextAligned( "FISHY MCFISH", 150, 77, kTextAlignment.left )
     
     -- Draw buttons
     for key, button in pairs( titleScreen.buttons ) do
