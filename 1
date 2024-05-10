@@ -1,0 +1,245 @@
+1. main.lua
+
+
+import "CoreLibs/graphics"
+import "CoreLibs/sprites"
+import "CoreLibs/timer"
+
+local gfx = playdate.graphics
+local Game = import "core/game"
+
+local game = Game:new()
+
+function playdate.update()
+    game:update()
+    game:draw()
+end
+2. core/game.lua
+
+
+import "CoreLibs/object"
+import "CoreLibs/graphics"
+
+local gfx = playdate.graphics
+local Player = import "entities/player"
+local HUD = import "ui/hud"
+local Fish = import "entities/fish"
+local GameState = import "core/game_state"
+
+class('Game').extends()
+
+function Game:init()
+    Game.super.init(self)
+    self.gameState = GameState:new()
+    self.player = Player:new(100, 100, self.gameState)
+    self.hud = HUD:new(self.gameState)
+    self.fishes = {
+        Fish:new('Common Fish', 100, 100, 0.8),
+        Fish:new('Rare Fish', 200, 200, 0.2),
+        Fish:new('Legendary Fish', 300, 300, 0.05)
+    }
+end
+
+function Game:update()
+    self.player:update()
+
+    -- Fishing interaction
+    if playdate.buttonJustPressed(playdate.kButtonA) then
+        for _, fish in ipairs(self.fishes) do
+            if self.player:isNear(fish) then
+                local caught = fish:attemptCatch()
+                if caught then
+                    self.player:addFish(fish)
+                end
+                break
+            end
+        end
+    end
+end
+
+function Game:draw()
+    gfx.clear()
+    self.player:draw()
+    for _, fish in ipairs(self.fishes) do
+        fish:draw()
+    end
+    self.hud:draw()
+end
+
+return Game
+3. core/game_state.lua
+
+
+GameState = {}
+GameState.__index = GameState
+
+function GameState:new()
+    local self = setmetatable({}, GameState)
+    self.score = 0
+    self.stamina = 65
+    self.hp = 125
+    self.gold = 5
+    self.bag = {}
+    return self
+end
+
+function GameState:addGold(amount)
+    self.gold = self.gold + amount
+end
+
+function GameState:reduceHP(amount)
+    self.hp = self.hp - amount
+    if self.hp < 0 then
+        self.hp = 0
+    end
+end
+
+function GameState:increaseStamina(amount)
+    self.stamina = math.min(self.stamina + amount, 100)
+end
+
+function GameState:decreaseStamina(amount)
+    self.stamina = math.max(self.stamina - amount, 0)
+end
+
+return GameState
+4. entities/player.lua
+
+
+import "CoreLibs/graphics"
+import "CoreLibs/sprites"
+
+local gfx = playdate.graphics
+
+class('Player').extends(gfx.sprite)
+
+function Player:init(x, y, gameState)
+    Player.super.init(self)
+    local image = gfx.image.new(20, 20)
+    gfx.pushContext(image)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(0, 0, image:getSize())
+    gfx.popContext()
+    self:setImage(image)
+    self:moveTo(x, y)
+    self:add()
+    self.gameState = gameState
+end
+
+function Player:update()
+    local dx, dy = 0, 0
+    if playdate.buttonIsPressed(playdate.kButtonLeft) then dx = -2 end
+    if playdate.buttonIsPressed(playdate.kButtonRight) then dx = 2 end
+    if playdate.buttonIsPressed(playdate.kButtonUp) then dy = -2 end
+    if playdate.buttonIsPressed(playdate.kButtonDown) then dy = 2 end
+    self:moveBy(dx, dy)
+end
+
+function Player:draw()
+    gfx.sprite.draw(self)
+end
+
+function Player:isNear(fish)
+    local playerX, playerY = self:getPosition()
+    local fishX, fishY = fish:getPosition()
+    local distance = math.sqrt((playerX - fishX)^2 + (playerY - fishY)^2)
+    return distance < 30
+end
+
+function Player:addFish(fish)
+    table.insert(self.gameState.bag, fish)
+    self.gameState:addGold(fish.value)
+end
+5. entities/fish.lua
+
+
+import "CoreLibs/graphics"
+import "CoreLibs/sprites"
+
+local gfx = playdate.graphics
+
+class('Fish').extends(gfx.sprite)
+
+function Fish:init(name, x, y, catchChance)
+    Fish.super.init(self)
+    self.name = name
+    self.catchChance = catchChance
+    local image = gfx.image.new(10, 10)
+    gfx.pushContext(image)
+    gfx.setColor(gfx.kColorBlack)
+    gfx.fillRect(0, 0, image:getSize())
+    gfx.popContext()
+    self:setImage(image)
+    self:moveTo(x, y)
+    self:add()
+    
+    if self.name == 'Common Fish' then
+        self.value = 10
+    elseif self.name == 'Rare Fish' then
+        self.value = 50
+    elseif self.name == 'Legendary Fish' then
+        self.value = 100
+    else
+        self.value = 0
+    end
+end
+
+function Fish:draw()
+    gfx.sprite.draw(self)
+end
+
+function Fish:attemptCatch()
+    return math.random() < self.catchChance
+end
+6. ui/hud.lua
+
+
+import "CoreLibs/graphics"
+
+local gfx = playdate.graphics
+
+HUD = {}
+HUD.__index = HUD
+
+function HUD:new(gameState)
+    local self = setmetatable({}, HUD)
+    self.gameState = gameState
+    return self
+end
+
+function HUD:draw()
+    gfx.setImageDrawMode(gfx.kDrawModeFillWhite)
+    gfx.drawText("Health: " .. self.gameState.hp, 10, 10)
+    gfx.drawText("Stamina: " .. self.gameState.stamina, 10, 30)
+    gfx.drawText("Gold: $" .. self.gameState.gold, 10, 50)
+    gfx.drawText("Bag: " .. #self.gameState.bag .. " fish", 10, 70)
+end
+
+return HUD
+Directory Structure
+Ensure your directory structure is as follows:
+
+
+fishing-game/
+├── core/
+│   ├── game.lua
+│   └── game_state.lua
+├── entities/
+│   ├── fish.lua
+│   └── player.lua
+├── ui/
+│   └── hud.lua
+
+
+local Player = {}
+Player.__index = Player
+
+function Player:new(gameState)
+    local self = setmetatable({}, Player)
+    self.state = gameState
+    return self
+end
+
+-- Add more methods as needed
+
+return Player  -- This line is crucial
