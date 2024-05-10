@@ -1,56 +1,40 @@
-import "CoreLibs/object"
-import "CoreLibs/graphics"
-import "CoreLibs/sprites"
-import "CoreLibs/timer"
+-- Example menu switcher
+-- You don't need to modify the code here, add code to the 
+
+import 'screen_title.lua'
+import 'screen_help.lua'
+import 'screen_game.lua'
+import 'state_manager.lua'
+
+
 
 local gfx = playdate.graphics
+playdate.display.setRefreshRate( 50 )
 
-local image = nil
-local musicPlayer = playdate.sound.fileplayer.new("sounds/castlebit.mp3")
+gfx.setBackgroundColor( gfx.kColorWhite )
 
-local function initialize()
-    gfx.setBackgroundColor(gfx.kColorClear)
-    local image = gfx.image.new("images/castle")
-    bgImage = gfx.sprite.new(image)
-    bgImage:moveTo(200, 120)
-    bgImage:add()
-    
-    
-    local font = gfx.font.new("fonts/Venture.fnt")
-    local text = gfx.drawText("Castle",100,100)
-    
-    
-end
-
-initialize()
+ChangeState( "title" )
 
 function playdate.update()
-    gfx.sprite.update()
-    textboxDial:draw()
-    musicPlayer:play()
+  UpdateState()
+  DrawState()
 end
 
-textboxDial = gfx.sprite.new()
-textboxDial:setSize(75, 75)
-textboxDial:moveTo(10, 30)
-textboxDial:setZIndex(899)
-textboxDial.currentText = "Castle"
+-- Callbacks
+function playdate.upButtonDown()    currentState.Handle_upButtonDown()    end
+function playdate.upButtonUp()      currentState.Handle_upButtonUp()      end
 
-function textboxDial:update()
-    textboxDial.currentText = actualNum
-    self:markDirty()
-end
+function playdate.downButtonDown()  currentState.Handle_downButtonDown()  end
+function playdate.downButtonUp()    currentState.Handle_downButtonUp()    end
+                                    
+function playdate.leftButtonDown()  currentState.Handle_leftButtonDown()  end
+function playdate.leftButtonUp()    currentState.Handle_leftButtonUp()    end
+                                    
+function playdate.rightButtonDown() currentState.Handle_rightButtonDown() end
+function playdate.rightButtonUp()   currentState.Handle_rightButtonUp()   end
+                                    
+function playdate.AButtonDown()     currentState.Handle_AButtonDown()     end
+function playdate.AButtonUp()       currentState.Handle_AButtonUp()       end
 
-function textboxDial:draw()
-
-    gfx.pushContext()		
-        gfx.setColor(gfx.kColorWhite)
-        gfx.fillRect(300,10,75,50)
-        gfx.setLineWidth(2)
-        gfx.setColor(gfx.kColorBlack)
-        gfx.drawRoundRect(300,10,75,50,4)
-        
-        gfx.drawText(self.currentText, 315, 25)
-    
-    gfx.popContext()
-end
+function playdate.BButtonDown()     currentState.Handle_BButtonDown()     end
+function playdate.BButtonUp()       currentState.Handle_BButtonUp()       end
