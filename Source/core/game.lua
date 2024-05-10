@@ -1,30 +1,26 @@
+import "CoreLibs/object"
 import "CoreLibs/graphics"
-import "CoreLibs/sprites"
-import "CoreLibs/timer"
-
-import "core/game_state"
-import "entities/player"
-import "entities/fish"
-import "ui/hud"
 
 local gfx = playdate.graphics
+local Player = import "entities/player"
+local HUD = import "ui/hud"
+local Fish = import "entities/fish"
+local GameState = import "core/game_state"
 
-class('Game', gfx.sprite)
+Game = class('Game')
 
-function Game:init(x, y)
-    self.super.init(self, x, y)
-    self.gameState = GameState()
-    self.player = Player(100, 100, self.gameState)
-    self.hud = HUD(self.gameState)
+function Game:init()
+    self.gameState = GameState:new()
+    self.player = Player:new(100, 100, self.gameState)
+    self.hud = HUD:new(self.gameState)
     self.fishes = {
-        Fish('Common Fish', 100, 100, 0.8),
-        Fish('Rare Fish', 200, 200, 0.2),
-        Fish('Legendary Fish', 300, 300, 0.05)
+        Fish:new('Common Fish', 100, 100, 0.8),
+        Fish:new('Rare Fish', 200, 200, 0.2),
+        Fish:new('Legendary Fish', 300, 300, 0.05)
     }
 end
 
 function Game:update()
-    self.player:update()
 
     -- Fishing interaction
     if playdate.buttonJustPressed(playdate.kButtonA) then

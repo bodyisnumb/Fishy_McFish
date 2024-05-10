@@ -3,21 +3,16 @@ import "CoreLibs/sprites"
 
 local gfx = playdate.graphics
 
-class('Player').extends(gfx.sprite)
+local Player = class("Player", gfx.sprite)
 
 function Player:init(x, y, gameState)
-    self.super.init(self)
-    
-    local image = gfx.image.new(20, 20)
-    gfx.pushContext(image)
-    gfx.setColor(gfx.kColorBlack)
-    gfx.fillRect(0, 0, image:getSize())
-    gfx.popContext()
-    
-    self:setImage(image)
+    Player.super.init(self)
+    local mp = gfx.imagetable.new('assets/sprites/ship.png')
+    local playerImage = mp:getImage("DOWN")
+    self:setImage(playerImage)
+    self:setCollideRect(0, 20, 21, 36)
     self:moveTo(x, y)
     self:add()
-
     self.gameState = gameState
 end
 
@@ -30,6 +25,9 @@ function Player:update()
     self:moveBy(dx, dy)
 end
 
+function Player:draw()
+    gfx.sprite.draw(self)
+end
 function Player:isNear(fish)
     local playerX, playerY = self:getPosition()
     local fishX, fishY = fish:getPosition()
@@ -41,3 +39,5 @@ function Player:addFish(fish)
     table.insert(self.gameState.bag, fish)
     self.gameState:addGold(fish.value)
 end
+
+return Player

@@ -9,6 +9,7 @@
       "*.h": "c"
     },
     "Lua.diagnostics.globals": [
-      "import"
+      "import",
+      "class"
     ]
   }

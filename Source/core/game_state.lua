@@ -1,4 +1,4 @@
-class('GameState')
+local GameState = class("GameState")
 
 function GameState:init()
     self.score = 0
@@ -26,5 +26,3 @@ end
 function GameState:decreaseStamina(amount)
     self.stamina = math.max(self.stamina - amount, 0)
 end
-
-return GameState

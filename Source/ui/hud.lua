@@ -2,7 +2,7 @@ import "CoreLibs/graphics"
 
 local gfx = playdate.graphics
 
-class('HUD')
+local HUD = class("HUD")
 
 function HUD:init(gameState)
     self.gameState = gameState
